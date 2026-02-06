@@ -407,21 +407,12 @@ Agradecimentos especiais a todos que contribuíram para este projeto:
   <tr>
     <td align="center">
       <a href="#">
-        <img src="https://via.placeholder.com/100" width="100px;" alt="Contribuidor 1"/><br>
+        <img src="https://avatars.githubusercontent.com/u/162909728?s=96&v=4" width="100px;" alt="Contribuidor 1"/><br>
         <sub>
           <b>Nome do Contribuidor</b>
         </sub>
       </a>
     </td>
-    <td align="center">
-      <a href="#">
-        <img src="https://via.placeholder.com/100" width="100px;" alt="Contribuidor 2"/><br>
-        <sub>
-          <b>Nome do Contribuidor</b>
-        </sub>
-      </a>
-    </td>
-  </tr>
 </table>
 
 ### Como Contribuir

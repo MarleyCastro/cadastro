@@ -106,11 +106,12 @@ Proporcionar uma ferramenta completa para:
 ## 🎬 Demonstração
 
 ### Tela de Login
-![alt text](image.png)
+<img width="1800" height="769" alt="Captura de tela 2026-02-06 095216" src="https://github.com/user-attachments/assets/9cc491d0-1555-43a0-80f9-a7b5b64d71cf" />
 
 
 ### Cadastro de Evento
-![alt text](image-1.png)
+<img width="1780" height="748" alt="Captura de tela 2026-02-06 095332" src="https://github.com/user-attachments/assets/889af5bf-cd69-41c3-aa8b-3344dfa313b9" />
+
 
 ### 🎥 Vídeo Demonstrativo
 > Em breve: Link para vídeo demonstrativo no YouTube

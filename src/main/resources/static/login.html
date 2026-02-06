@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Sistema de Eventos</title>
+    <link rel="stylesheet" href="/css/login.css">
+</head>
+<body>
+    <div class="container">
+        <div class="login-box">
+            <h1>🎫 Sistema de Eventos</h1>
+            <p class="subtitle">Faça login para continuar</p>
+            
+            <form id="loginForm" onsubmit="realizarLogin(event)">
+                <div class="input-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" placeholder="seu@email.com" required>
+                </div>
+                
+                <div class="input-group">
+                    <label for="senha">Senha</label>
+                    <input type="password" id="senha" placeholder="••••••••" required>
+                </div>
+                
+                <button type="submit" class="btn-login">Entrar</button>
+                
+                <div id="mensagem" class="mensagem"></div>
+            </form>
+            
+            <div class="links">
+                <a href="#" onclick="mostrarCadastro()">Não tem conta? Cadastre-se</a>
+            </div>
+        </div>
+        
+        <!-- Box de Cadastro (inicialmente oculto) -->
+        <div class="login-box" id="cadastroBox" style="display: none;">
+            <h1>📝 Criar Conta</h1>
+            <p class="subtitle">Preencha seus dados</p>
+            
+            <form id="cadastroForm" onsubmit="realizarCadastro(event)">
+                <div class="input-group">
+                    <label for="cadNome">Nome Completo</label>
+                    <input type="text" id="cadNome" placeholder="Seu nome" required>
+                </div>
+                
+                <div class="input-group">
+                    <label for="cadEmail">Email</label>
+                    <input type="email" id="cadEmail" placeholder="seu@email.com" required>
+                </div>
+                
+                <div class="input-group">
+                    <label for="cadSenha">Senha</label>
+                    <input type="password" id="cadSenha" placeholder="••••••••" required>
+                </div>
+                
+                <button type="submit" class="btn-login">Cadastrar</button>
+                
+                <div id="mensagemCadastro" class="mensagem"></div>
+            </form>
+            
+            <div class="links">
+                <a href="#" onclick="mostrarLogin()">Já tem conta? Faça login</a>
+            </div>
+        </div>
+    </div>
+    
+    <script src="/js/login.js"></script>
+</body>
+</html>

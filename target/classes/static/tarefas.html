@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciar Tarefas</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .tarefa-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            margin: 10px 0;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+        }
+        
+        .tarefa-concluida {
+            text-decoration: line-through;
+            opacity: 0.6;
+        }
+        
+        .checkbox-tarefa {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+        
+        .info-evento {
+            font-size: 12px;
+            color: #aaa;
+            margin-top: 5px;
+        }
+        
+        select {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 6px;
+            border: none;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.9);
+        }
+    </style>
+</head>
+<body>
+
+<h1>📋 Gerenciamento de Tarefas</h1>
+
+<div style="margin-bottom: 20px;">
+    <button onclick="window.location.href='/index.html'">← Voltar para Eventos</button>
+    <button onclick="sair()" style="background: #ff4757;">Sair</button>
+</div>
+
+<h2>➕ Nova Tarefa</h2>
+<div>
+    <input id="descricao" placeholder="Descrição da tarefa">
+    
+    <label for="eventoSelect">Vincular ao Evento:</label>
+    <select id="eventoSelect">
+        <option value="">Selecione um evento (opcional)</option>
+    </select>
+    
+    <button onclick="salvarTarefa()">Salvar Tarefa</button>
+    <button onclick="limparFormulario()">Limpar</button>
+</div>
+
+<h2>📝 Lista de Tarefas</h2>
+<ul id="listaTarefas"></ul>
+
+<script>
+const API_TAREFAS = "http://localhost:8080/api/tarefas";
+const API_EVENTOS = "http://localhost:8080/api/eventos";
+
+// Verificar autenticação ao carregar a página
+document.addEventListener('DOMContentLoaded', function() {
+    verificarAutenticacao();
+    carregarEventos();
+    listarTarefas();
+});
+
+function verificarAutenticacao() {
+    const usuario = localStorage.getItem('usuario');
+    if (!usuario) {
+        window.location.href = '/login.html';
+    }
+}
+
+function sair() {
+    if (confirm('Deseja realmente sair?')) {
+        localStorage.removeItem('usuario');
+        window.location.href = '/login.html';
+    }
+}
+
+// Carregar eventos para o select
+function carregarEventos() {
+    fetch(API_EVENTOS)
+        .then(res => res.json())
+        .then(eventos => {
+            const select = document.getElementById("eventoSelect");
+            eventos.forEach(evento => {
+                const option = document.createElement("option");
+                option.value = evento.id;
+                option.textContent = `${evento.nome} - ${new Date(evento.data + 'T00:00:00').toLocaleDateString('pt-BR')}`;
+                select.appendChild(option);
+            });
+        })
+        .catch(error => {
+            console.error("Erro ao carregar eventos:", error);
+        });
+}
+
+// Salvar tarefa
+function salvarTarefa() {
+    const descricao = document.getElementById("descricao").value;
+    const eventoId = document.getElementById("eventoSelect").value;
+
+    if (!descricao.trim()) {
+        alert("Por favor, preencha a descrição da tarefa!");
+        return;
+    }
+
+    const tarefa = {
+        descricao: descricao,
+        concluida: false,
+        evento: eventoId ? { id: parseInt(eventoId) } : null
+    };
+
+    console.log("Enviando tarefa:", JSON.stringify(tarefa));
+
+    fetch(API_TAREFAS, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(tarefa)
+    })
+    .then(response => {
+        console.log("Status:", response.status);
+        return response.text().then(text => {
+            console.log("Resposta:", text);
+            if (response.ok) {
+                alert("Tarefa cadastrada com sucesso!");
+                limparFormulario();
+                listarTarefas();
+            } else {
+                alert(`Erro ao cadastrar tarefa! Status: ${response.status}\nDetalhes: ${text}`);
+            }
+        });
+    })
+    .catch(error => {
+        console.error("Erro:", error);
+        alert("Erro ao conectar com o servidor!\n" + error.message);
+    });
+}
+
+// Listar tarefas
+function listarTarefas() {
+    fetch(API_TAREFAS)
+        .then(res => {
+            if (!res.ok) throw new Error("Erro ao buscar tarefas");
+            return res.json();
+        })
+        .then(tarefas => {
+            const lista = document.getElementById("listaTarefas");
+            lista.innerHTML = "";
+
+            if (tarefas.length === 0) {
+                lista.innerHTML = "<li style='text-align:center; color: white; background: rgba(255,255,255,0.2);'>Nenhuma tarefa cadastrada ainda.</li>";
+                return;
+            }
+
+            tarefas.forEach(tarefa => {
+                const li = document.createElement("li");
+                li.className = "tarefa-item";
+                
+                const concluida = tarefa.concluida ? "checked" : "";
+                const classeConcluida = tarefa.concluida ? "tarefa-concluida" : "";
+                
+                let infoEvento = "";
+                if (tarefa.evento) {
+                    const dataEvento = new Date(tarefa.evento.data + 'T00:00:00').toLocaleDateString('pt-BR');
+                    infoEvento = `<div class="info-evento">📌 Evento: ${tarefa.evento.nome} (${dataEvento})</div>`;
+                }
+                
+                li.innerHTML = `
+                    <div style="flex: 1;">
+                        <div style="display: flex; align-items: center;">
+                            <input type="checkbox" class="checkbox-tarefa" ${concluida} 
+                                   onchange="alternarConclusao(${tarefa.id})">
+                            <span class="${classeConcluida}">${tarefa.descricao}</span>
+                        </div>
+                        ${infoEvento}
+                    </div>
+                    <button onclick="removerTarefa(${tarefa.id})" 
+                            style="background: #ff4757; padding: 8px 12px; min-width: 80px;">
+                        🗑️ Excluir
+                    </button>
+                `;
+                
+                lista.appendChild(li);
+            });
+        })
+        .catch(error => {
+            console.error("Erro ao listar tarefas:", error);
+            const lista = document.getElementById("listaTarefas");
+            lista.innerHTML = "<li style='background: #ff6b6b; color: white;'>⚠️ Erro ao carregar tarefas.</li>";
+        });
+}
+
+// Alternar conclusão da tarefa
+function alternarConclusao(id) {
+    fetch(`${API_TAREFAS}/${id}/alternar`, {
+        method: "PUT"
+    })
+    .then(response => {
+        if (response.ok) {
+            listarTarefas();
+        } else {
+            alert("Erro ao atualizar tarefa!");
+        }
+    })
+    .catch(error => {
+        console.error("Erro:", error);
+        alert("Erro ao conectar com o servidor!");
+    });
+}
+
+// Remover tarefa
+function removerTarefa(id) {
+    if (confirm('Deseja realmente excluir esta tarefa?')) {
+        fetch(`${API_TAREFAS}/${id}`, {
+            method: "DELETE"
+        })
+        .then(response => {
+            if (response.ok) {
+                alert('Tarefa removida com sucesso!');
+                listarTarefas();
+            } else {
+                alert('Erro ao remover tarefa!');
+            }
+        })
+        .catch(error => {
+            console.error('Erro:', error);
+            alert('Erro ao conectar com o servidor!');
+        });
+    }
+}
+
+// Limpar formulário
+function limparFormulario() {
+    document.getElementById("descricao").value = "";
+    document.getElementById("eventoSelect").value = "";
+}
+</script>
+
+</body>
+</html>

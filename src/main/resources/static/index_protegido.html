@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestão de Eventos</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<div class="header">
+    <h1>Cadastro de Eventos</h1>
+    <div class="user-info">
+        <span id="nomeUsuario">👤 Usuário</span>
+        <button onclick="sair()" class="btn-sair">Sair</button>
+    </div>
+</div>
+
+<div class="formulario">
+    <input id="nome" type="text" placeholder="Nome do Evento">
+    <input id="data" type="date" placeholder="Data">
+    <input id="local" type="text" placeholder="Local">
+    <button onclick="salvarEvento()">Salvar Evento</button>
+</div>
+
+<h2>Lista de Eventos</h2>
+<ul id="lista"></ul>
+
+<script src="/js/app.js"></script>
+</body>
+</html>

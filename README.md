@@ -409,7 +409,7 @@ Agradecimentos especiais a todos que contribuíram para este projeto:
       <a href="#">
         <img src="https://avatars.githubusercontent.com/u/162909728?s=96&v=4" width="100px;" alt="Contribuidor 1"/><br>
         <sub>
-          <b>Nome do Contribuidor</b>
+          <b>Marley Castro</b>
         </sub>
       </a>
     </td>
